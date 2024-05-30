@@ -48,15 +48,12 @@ class Expiry extends ToCBorable {
 HttpAgentRequestTransformFnCall makeNonceTransform(
     [NonceFunc nonceFn = makeNonce]) {
   return (HttpAgentBaseRequest request) async {
-    // Print the request object and its type
-    print('Request: $request');
-    print('Type of request: ${request.runtimeType}');
+    // Nonce are only useful for async calls, to prevent replay attacks. Other types of
+    // calls don't need Nonce so we just skip creating one.
 
     // Compare runtimeType to 'HttpAgentSubmitRequest'
     if (request.runtimeType.toString() == 'HttpAgentSubmitRequest') {
-      print('Request is a submit request');
       (request as HttpAgentSubmitRequest).body.nonce = nonceFn();
-      print((request as HttpAgentSubmitRequest).body.nonce);
     }
   };
 }
