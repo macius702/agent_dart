@@ -100,7 +100,7 @@ class Ed25519KeyIdentity extends auth.SignIdentity {
 
     var kp = seed == null ? SigningKey.generate() : SigningKey.fromSeed(seed);
 
-    publicKey = kp.publicKey.buffer.asUint8List();
+    publicKey = kp.publicKey.asTypedList;
     secretKey = kp.asTypedList;
 
     return Ed25519KeyIdentity(

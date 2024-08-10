@@ -75,7 +75,8 @@ class SingingBlockZipFileEncoder extends ZipFileEncoder {
       {String? filename,
       int? level,
       bool followLinks = true,
-      DateTime? modified}) {
+      void Function(double)? onProgress,
+      DateTime? modified})  {
     final dirPath = dir.path;
     final zip_path = filename ?? '$dirPath.zip';
     level ??= GZIP;
@@ -97,7 +98,10 @@ class SingingBlockZipFileEncoder extends ZipFileEncoder {
 
   @override
   Future<void> addDirectory(Directory dir,
-      {bool includeDirName = true, int? level, bool followLinks = true}) async {
+      {bool includeDirName = true,
+      int? level,
+      bool followLinks = true,
+      void Function(double)? onProgress}) async {
     // _encoder.signingBlock.write(_output);
     List files = dir.listSync(recursive: true, followLinks: followLinks);
     var futures = <Future<void>>[];
@@ -138,9 +142,12 @@ class SingingBlockZipFileEncoder extends ZipFileEncoder {
   }
 
   @override
-  void close() {
+  Future<void> close() {
     _encoder.writeBlock(_output);
     _encoder.endEncode();
     _output.close();
+
+    return Future.value();
+
   }
 }
